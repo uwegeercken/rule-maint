@@ -1,8 +1,0 @@
-if(user==null)
-{
-	templatename="login.vm";
-}
-else
-{
-    templatename = "editavatar.vm";
-}

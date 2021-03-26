@@ -1,1 +1,0 @@
-<xml><fields>#foreach($field in ${project.fields})<field name="${field.name}" namedescriptive="$!{field.nameDescriptive}" description="$!{field.description}" javatypeid="${field.javaTypeId}"/>#end</fields></xml>

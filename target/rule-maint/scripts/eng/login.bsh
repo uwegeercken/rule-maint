@@ -1,7 +1,0 @@
-if(!databaseconnectionok)
-{
-	infomessage.type="error";
-	infomessage.text="Currently only the Administrator User can log in to the application";
-	
-}
-templatename="login.vm";
