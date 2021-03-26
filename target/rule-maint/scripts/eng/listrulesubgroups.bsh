@@ -1,0 +1,41 @@
+import com.datamelt.db.DbCollections;
+import com.datamelt.db.RuleGroup;
+import com.datamelt.db.RuleGroupAction;
+import com.datamelt.db.Project;
+
+if(user==null)
+{
+	templatename="login.vm";
+}
+else
+{
+		rulegroupId=Long.parseLong(request.getParameter("rulegroupid"));
+		searchid=request.getParameter("searchid");
+		if(searchid!=null)
+		{
+			context.put("searchid",searchid);
+		}
+		ArrayList groups = DbCollections.getAllRuleSubgroups(connection,rulegroupId);
+		context.put("rulesubgroups",groups);
+
+		ArrayList actions = DbCollections.getAllRuleGroupActions(connection,rulegroupId);
+		context.put("rulegroupactions",actions);
+		
+		RuleGroup rulegroup = new RuleGroup();
+        rulegroup.setConnection(connection);
+        rulegroup.setId(rulegroupId);
+        rulegroup.load();
+        rulegroup.loadRuleSubgroups();
+        rulegroup.loadRuleGroupActions();
+		context.put("rulegroup",rulegroup);
+		context.put("usedfields",rulegroup.getReferencedFields());
+	
+		Project project = new Project();
+        project.setConnection(connection);
+        project.setId(rulegroup.projectId);
+        project.load();
+        project.loadFields();
+		context.put("project",project);
+
+		templatename="listrulesubgroups.vm";
+}

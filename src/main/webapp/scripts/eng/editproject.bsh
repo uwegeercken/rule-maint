@@ -1,0 +1,191 @@
+import com.datamelt.db.Project;
+import com.datamelt.db.History;
+import com.datamelt.db.DbCollections;
+import com.datamelt.db.Group;
+import com.datamelt.db.Activity;
+
+writeaction="true"; 
+if(user==null)
+{
+	templatename="login.vm";
+}
+else
+{
+	cancelled= request.getParameter("submit");
+	stepsOk=true;
+
+	Project project = new Project();
+	project.connection = connection;
+	
+	if(cancelled!=null && cancelled.equals("save"))
+	{
+		id=Long.parseLong(request.getParameter("id"));
+		name=request.getParameter("name");
+		if(request.getParameter("stepname")!=null && !request.getParameter("stepname").equals(""))
+		{
+			stepname=request.getParameter("stepname");
+		}
+		else
+		{
+			stepname=null;
+		}
+		description=request.getParameter("description");
+		exportfilename=request.getParameter("exportfilename");
+		projectgroupid=Integer.parseInt(request.getParameter("projectgroupid"));
+		if(request.getParameter("isprivate")!=null)
+		{
+			isprivate=1;
+		}
+		else
+		{
+			isprivate=0;
+		}
+		objectClassname = request.getParameter("objectclassname");
+		objectMethodGetter = request.getParameter("objectmethodgetter");
+		objectMethodSetter = request.getParameter("objectmethodsetter");
+		
+		if(id>0)
+		{
+			project.setId(id);
+			project.load();
+			if(user.isInGroup("Admin") || user.isProjectOwner(project))
+			{
+
+				if((project.name.equals(name) || (!project.name.equals(name) && !project.exist(name) && name.length()>0)) && projectgroupid>0)
+				{
+					name = name.replaceAll("/"," ");
+					name = name.replaceAll("\\\\"," ");
+					project.setName(name);
+					project.setDescription(description);
+					project.setExportFilename(exportfilename);
+					project.setPrivateProject(isprivate);
+					project.lastUpdateUser.id = user.id;
+					project.group.id = projectgroupid;
+					project.objectClassname = objectClassname;
+					project.objectMethodGetter = objectMethodGetter;
+					project.objectMethodSetter = objectMethodSetter;
+					project.update(connection.getPreparedStatement(Project.UPDATE_SQL),user);
+					context.put("mode","updated");
+					project.load();
+					
+					History history = new History();
+					history.connection = connection;
+					history.user = user;
+					history.type = "project";
+					history.typeId = project.id;
+					history.insert(connection.getPreparedStatement(History.INSERT_SQL));
+					
+					infomessage.text="Project updated.";
+				}
+				else if(!project.name.equals(name) && project.exist(name) && name.length()>0)
+				{
+					project.setName(name);
+					project.setDescription(description);
+					project.setExportFilename(exportfilename);
+					project.setPrivateProject(isprivate);
+					project.objectClassname = objectClassname;
+					project.objectMethodGetter = objectMethodGetter;
+					project.objectMethodSetter = objectMethodSetter;
+					infomessage.type="error";
+					infomessage.text="Project already exists.";
+				}
+				else
+				{
+					project.setName(name);
+					project.setDescription(description);
+					project.setExportFilename(exportfilename);
+					project.setPrivateProject(isprivate);
+					project.objectClassname = objectClassname;
+					project.objectMethodGetter = objectMethodGetter;
+					project.objectMethodSetter = objectMethodSetter;
+					project.setGroup(new Group());
+					infomessage.type="error";
+					infomessage.text="Project name and group must be specified.";
+				}
+			}
+			else
+			{
+				ArrayList list;
+				list = DbCollections.getAllProjects(connection, user);
+				context.put("projects",list);
+				infomessage.type = "error";
+				infomessage.text="the requested action may only be executed by a person who is in the Admin group or the owner of the project.";				
+				
+				templatename="listprojects.vm";
+			}
+		}
+		else
+		{
+			if(!project.exist(name) && name.length()>0 && projectgroupid>0)
+			{
+				project.setName(name);
+				project.setDescription(description);
+				project.setExportFilename(exportfilename);
+				project.setPrivateProject(isprivate);
+				project.lastUpdateUser.id = user.id;
+				project.ownerUser.id = user.id;
+				project.objectClassname = objectClassname;
+				project.objectMethodGetter = objectMethodGetter;
+				project.objectMethodSetter = objectMethodSetter;
+				project.group.id = projectgroupid;
+				project.insert(connection.getPreparedStatement(Project.INSERT_SQL),user);
+				context.put("mode","inserted");
+				project.load();
+				
+				Activity activity = new Activity();
+				activity.connection = connection;
+				activity.user = user;
+				activity.message = "Added project [" + project.name +"], description [" + project.description +"], group [" + project.group.name + "]";
+				activity.insert(connection.getPreparedStatement(Activity.INSERT_SQL));
+				
+				History history = new History();
+				history.connection = connection;
+				history.user = user;
+				history.type = "project";
+				history.typeId = project.id;
+				history.insert(connection.getPreparedStatement(History.INSERT_SQL));
+				
+				infomessage.text="Project added. Add reference fields to the project.";
+			}
+			else if(project.exist(name) && name.length()>0)
+			{
+				project.setName(name);
+				project.setDescription(description);
+				project.setExportFilename(exportfilename);
+				project.setPrivateProject(isprivate);
+				project.objectClassname = objectClassname;
+				project.objectMethodGetter = objectMethodGetter;
+				project.objectMethodSetter = objectMethodSetter;
+				infomessage.type="error";
+				infomessage.text="Project already exists.";
+			}
+			else
+			{
+				project.setName(name);
+				project.setDescription(description);
+				project.setExportFilename(exportfilename);
+				project.setPrivateProject(isprivate);
+				project.objectClassname = objectClassname;
+				project.objectMethodGetter = objectMethodGetter;
+				project.objectMethodSetter = objectMethodSetter;
+				project.setGroup(new Group());
+				infomessage.type="error";
+				infomessage.text="Project name and group must be specified.";
+			}
+		}
+		
+		context.put("project",project);
+		
+		ArrayList list = DbCollections.getAllGroups(connection, user);
+		context.put("groups",list);
+		
+		templatename="editproject.vm";
+	}
+	else
+	{
+		ArrayList list;
+		list = DbCollections.getAllProjects(connection, user);
+		context.put("projects",list);
+		templatename="listprojects.vm";
+	}
+}

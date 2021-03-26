@@ -1,0 +1,107 @@
+#set($pagetitle='Project Maintenance')
+<p class="heading">#if($mode!="add")Edit Project: ${project.name}#else Add Project#end</p>
+<p><img id="helpimg" height="22" width="22" src="img/help_black.png" title="show help" onclick="switchHelp()"><a href="process?action=bsh&ro=1&scriptname=listprojects"><img class="go_back" height="22" width="22" src="img/go_back.png" title="go back: Project List"></a></p>
+<div id="help">
+	<p class="helptitle">#if($mode=="add")Add project #else Edit project#end</p>
+	<p>Enter the name (do not use a slash or backslash in the name) and description of the project.</p>
+	<p>Enter the filename of the project when it is exported. The name will be used as the zip file name containing all rules, so it's better to not use special characters and spaces.</p>
+	<p>The group field defines to which group the project belongs. Only members of the group have write access to the project. Mark the group as private so that users outside the group do not see the project. The person who created the project (the owner) has always write access to the project.</p>
+	<p>Field Getter/Setter Classname: The name of the Java class that will be used, to handle the data retrieval.</p>
+	<p>Field Getter Method: The name of the method that will be used to get/retrieve data.</p>
+	<p>Field Setter Method: The name of the method that will be used to set/update data.</p>
+</div>
+<div class="formbox">
+#if($mode=="add")
+	<form method="POST" action="process?action=bsh&scriptname=editproject"> 
+	
+#else
+	<form method="POST" action="process?action=bsh&scriptname=editproject&id=${project.id}" enctype="multipart/form-data"> 
+#end
+<input type="hidden" name="id" value="${project.id}">
+<table align="center" width="95%" border="0">
+	<tr> 
+		<td width="20%">Name:</td>
+		<td>
+			<input name="name" type="text" size="40" maxlength="80" value="$!{project.name}">
+		</td>
+		
+	</tr>
+	<tr>
+		<td>Description:</td>
+		<td>
+			<input name="description" type="text" size="40" maxlength="255" value="$!{project.description}">
+		</td>
+	</tr>
+	<tr>
+		<td>Project export Filename:</td>
+		<td>
+			<input name="exportfilename" type="text" size="40" maxlength="255" value="$!{project.exportFilename}">
+		</td>
+	</tr>
+	<tr class="hiddenrow">
+		<td>Field Getter/Setter Classname:</td>
+		<td>
+			<input name="objectclassname" type="text" size="40" maxlength="80" value="$!{project.objectClassname}">
+		</td>
+	</tr>
+	<tr class="hiddenrow">
+		<td>Field Getter Method:</td>
+		<td>
+			<input name="objectmethodgetter" type="text" size="40" maxlength="80" value="$!{project.objectMethodGetter}">
+		</td>
+	</tr>
+	<tr class="hiddenrow">
+		<td>Field Setter Method:</td>
+		<td>
+			<input name="objectmethodsetter" type="text" size="40" maxlength="80" value="$!{project.objectMethodSetter}">
+		</td>
+	</tr>
+	<tr>
+		<td>Group:</td>
+		<td>		
+			<select name="projectgroupid" size="1">
+				<option selected value="0"></option>
+				#foreach($group in $groups)
+					#if(${project.group.id}==$group.id)
+						<option selected value="$group.id">$group.name</option>
+					#else
+						<option value="$group.id">$group.name</option>
+					#end
+				#end
+
+    		</select>
+		</td>		
+	</tr>
+	<tr>
+		<td>Private project:</td>
+		<td>
+			<input type="checkbox" name="isprivate" value="${project.privateProject}" #if(${project.privateProject}==1)checked#end>
+		</td>
+	</tr>
+	<tr>
+	#if($mode && ($mode=="inserted" || $mode=="updated"))
+		<td colspan="2" align="center"><br />
+			<input type="submit" value="close" name="submit">
+		</td>
+	#else
+		<td colspan="2" align="center"><br />
+			<input type="submit" value="save" name="submit">
+			<input type="submit" value="cancel" name="submit">
+		</td>
+	#end
+	</tr>
+	<tr>
+		<td colspan="2"><br />
+			<img id="moretoshow" height="22" width="22" src="img/more.png" title="more/less options">
+		</td>
+	</tr>
+</table>
+</form>
+#if(${project.id}>0)
+	<p class="small">owner: ${project.ownerUser.name}, last edited by: ${project.lastUpdateUser.name}, ${project.lastUpdate}</p>
+#end
+</div>
+
+#if (${infomessage})
+	<p align="center">#insert_message($infomessage)</p>
+#end

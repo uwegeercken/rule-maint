@@ -1,0 +1,89 @@
+#set($pagetitle='List Logic')
+#set($layout="eng/layout_logic.vm")
+<table width="99%" border="0">
+	<tr>
+		<td class="printheadingbold" width="25%">Project:</td>
+		<td class="printheading" width="75%">${project.name}</td>
+	</tr>
+</table>
+#foreach($rulegroup in $rulegroups)
+	<table width="99%" border="0">
+		<tr>
+			<td class="printheadingbold" width="25%">Rule Group:</td>
+			<td class="printheading" width="75%">${rulegroup.name} - $!{rulegroup.description}</td>
+		</tr>
+		<tr>
+			<td width="25%"></td>
+			<td class="printheading" width="75%">valid: [$!{rulegroup.validFrom}] until: [$!{rulegroup.validUntil}]</td>
+		</tr>
+		<tr>
+			<td width="25%"></td>
+			<td class="printheading" width="75%">depends on: #if($rulegroup.dependentRuleGroup.id>0)[$!{rulegroup.dependentRuleGroup.name}] - condition: [$!{rulegroup.dependentRuleGroupExecuteIf}]#else [none]#end</td>
+		</tr>
+		<tr>
+			<td width="25%"></td>
+			<td class="printheading" width="75%">rule groups depending: #if($!{rulegroup.dependentRuleGroups}!="")$!{rulegroup.dependentRuleGroups}#else [none]#end</td>
+		</tr>
+	</table>
+	#set($subgroupcounter=0)
+	#foreach($rulesubgroup in $rulegroup.ruleSubgroups)
+	<table width="99%" border="0">
+		<tr>
+			<td class="printheadingbold" width="25%">Subgroup:</td>
+			<td class="printheading" width="75%">$rulesubgroup.name - $!rulesubgroup.description</td>
+		</tr>
+		#if($subgroupcounter>0)
+		<tr>
+			<td width="25%"></td>
+			<td class="printheading" width="75%">#if($subgroupcounter < ${rulegroup.ruleSubgroups.size()})connector to previous subgroup: [$!rulesubgroup.intergroupOperator]#end</td>
+		</tr>
+		#end
+		#if($rulesubgroup.rules.size()>1)
+		<tr>
+			<td width="25%"></td>
+			<td class="printheading" width="75%">connector between rules: [$!rulesubgroup.ruleOperator]</td>
+		</tr>
+		#end
+	</table>
+	<table width="99%" border="0">
+		<tr>
+			<td class="printheadingbold" width="100%">Rule(s):</td>
+		</tr>
+	</table>
+		<table width="99%" border="0">
+		#set($subgroupcounter=$subgroupcounter+1)
+			#set($counter=0)
+				
+			
+			#foreach($rule in $rulesubgroup.rules)
+				<tr>
+					<td width="5%" align="right" valign="top">#if($counter >0 && $counter < ${rulesubgroup.rules.size()})$!{rulesubgroup.ruleOperator}#end</td>
+					<td width="20%">$!{rule.name}</td>
+					<td width="75%">$!{rule.ruleLogic}</td>
+				</tr>
+				#set($counter=$counter+1)
+			#end
+		</table>
+	#end
+	</br>
+	#if($rulegroup.actions.size()>0)
+	<table width="99%" border="0">
+		<tr>
+			<td class="printheadingbold" width="100%">Action(s):</td>
+		</tr>
+	</table>
+		#set($counter2=0)
+		#foreach($action in $rulegroup.actions)
+		<table width="99%" border="0">
+			<tr>
+				<td width="5%" align="right" valign="top">#if($counter2>0 && $counter2 < ${rulegroup.actions.size()})and#end</td>
+				<td width="20%">$action.name</td>
+				<td width="75%">#if($action.executeIf!="always")when $action.executeIf#else always#end : $action.actionLogic</td>
+			</tr>
+			#set($counter2=$counter2+1)
+			</table>
+		#end
+	#end
+	<hr width="100%">
+#end
+<p>data as of: $now</p>

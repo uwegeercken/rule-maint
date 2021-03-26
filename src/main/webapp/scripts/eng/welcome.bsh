@@ -1,0 +1,13 @@
+import java.util.Random;
+
+Random rand= new Random();
+
+int min=1;
+int max=2;
+
+int randomNum = rand.nextInt((max - min) + 1) + min;	
+
+context.put("shotnumber",randomNum);
+
+templatename="welcome.vm";
+

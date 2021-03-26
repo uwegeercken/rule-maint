@@ -1,0 +1,112 @@
+#set($pagetitle='Rule Group Maintenance')
+<p class="heading">#if($mode && $mode=="add")Add Rule Group #elseif($mode && $mode=="copy")Copy Rule Group #else Edit Rule Group#end - Project: <a href="process?action=bsh&ro=1&scriptname=listrulegroups&projectid=${project.id}">${project.name}</a></p>
+<p>
+	<img id="helpimg" height="22" width="22" src="img/help_black.png" title="show help" onclick="switchHelp()">
+	<a href="process?action=bsh&ro=1&scriptname=listrulegroups&projectid=${project.id}"><img class="go_back" height="22" width="22" src="img/go_back.png" title="go back: Rule Group List"></a>
+	#if($user.canUpdateProject($project)==true)
+		<a href="process?action=bsh&ro=1&scriptname=selecteditrulegroup&id=0&projectid=${project.id}&mode=add"><img class="add_external" height="22px" width="22px" src="img/group_add2.png" title="add rulegroup"></a>
+	#end
+</p>
+<div id="help">
+	<p class="helptitle">#if($mode=="add")Add Rulegroup #else Edit Rulegroup#end</p>
+	<p>Enter the name and description of the rule group. Specify from and until date for the validity of the group.</p>
+	#if($mode && $mode!="copy" && $mode!="add")
+		<p>Select a rulegroup that this rulegroup depends on and which result the dependent rulegroup must have. The valid from and valid must lie within the valid from and until of the dependent rulegroup.</p>
+		<p>This rulegroup - and all rules and actions - will only be executed if the result of the dependent rulegroup is corresponding.</p>
+	#end
+</div>
+<div class="formbox">
+#if($mode && $mode=="add")
+	<form method="POST" action="process?action=bsh&scriptname=editrulegroup&id=0&projectid=${project.id}&mode=${mode}"> 
+#elseif($mode && $mode=="copy")
+	<form method="POST" action="process?action=bsh&scriptname=editrulegroup&id=0&projectid=${project.id}&mode=${mode}&copyid=${copyid}"> 
+#else
+	<form method="POST" action="process?action=bsh&scriptname=editrulegroup&id=${rulegroup.id}&projectid=${project.id}"> 
+#end
+
+<table align="center" width="95%" border="0">
+	<tr> 
+		<td>Name:</td>
+		<td>
+			<input name="name" type="text" size="40" maxlength="80" value="$!{rulegroup.name}">
+		</td>
+		
+	</tr>
+	<tr>
+		<td>Description:</td>
+		<td>
+			<input name="description" type="text" size="40" maxlength="255" value="$!{rulegroup.description}">
+		</td>
+	</tr>
+	<tr>
+		<td>Valid from:</td>
+		<td>
+			<input id="datepicker1" name="valid_from" type="text" size="40" maxlength="255" value="$!{rulegroup.validFrom}"> (format: YYYY-MM-DD)
+		</td>
+	</tr>
+	<tr>
+		<td>Valid until:</td>
+		<td>
+			<input id="datepicker2" name="valid_until" type="text" size="40" maxlength="255" value="$!{rulegroup.validUntil}"> (format: YYYY-MM-DD)
+		</td>
+	</tr>
+	#if($mode!="copy")
+		#if($dependentGroups.size()>0)
+		<tr>
+			<td>Depends on Rulegroup:</td>
+			<td>
+				<select id="rulegroup" name="dependentgroupid" size="1">
+				<option value="0"></option>
+				#foreach($dependentgroup in $dependentGroups)
+					#if(${rulegroup.id}!=${dependentgroup.id} && ${rulegroup.dependentRuleGroupId}==${dependentgroup.id})
+						<option selected value="${dependentgroup.id}">${dependentgroup.name} - ${dependentgroup.description}</option>
+					#elseif(${rulegroup.id}!=${dependentgroup.id})
+						<option value="${dependentgroup.id}">${dependentgroup.name} - ${dependentgroup.description}</option>
+					#end
+				#end
+	    		</select> with result: 
+	    		<select name="dependentgroupexecuteif" size="1" id="executeif">
+				<option value=""></option>
+				#if($dependentGroups.size()>0)
+					#if(${rulegroup.dependentRuleGroupExecuteIf}=="passed")
+						<option selected="selected" value="passed">passed</option>
+					#else
+						<option value="passed">passed</option>
+					#end
+					#if(${rulegroup.dependentRuleGroupExecuteIf}=="failed")
+						<option selected="selected" value="failed">failed</option>
+					#else
+						<option value="failed">failed</option>
+					#end
+				#end
+	    		</select>
+			</td>
+		</tr>
+		#else
+			<tr>
+				<td>Depends on Rulegroup:</td>
+				<td>[no dependencies possible]</td>
+			</tr>
+		#end
+	#end
+	<tr>
+	#if($mode && ($mode=="inserted" || $mode=="updated"))
+		<td colspan="2" align="center"><br />
+			<input type="submit" value="close" name="submit">
+		</td>
+	#else
+		<td colspan="2" align="center"><br />
+			<input type="submit" value="save" name="submit">
+			<input type="submit" value="cancel" name="submit">
+		</td>
+	#end
+	</tr>
+</table>
+</form>
+#if(${rulegroup.id}>0)
+	<p class="small">last edited by: ${rulegroup.lastUpdateUser.name}, ${rulegroup.lastUpdate}</p>
+#end
+</div>
+#if (${infomessage})
+	<p align="center">#insert_message($infomessage)</p> 
+#end

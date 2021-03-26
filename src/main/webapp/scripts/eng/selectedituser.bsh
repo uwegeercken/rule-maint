@@ -1,0 +1,32 @@
+import java.io.*;
+import com.datamelt.db.User;
+
+adminaction="true";
+if(user==null)
+{
+	templatename="login.vm";
+}
+else
+{
+	id=Long.parseLong(request.getParameter("id"));
+	mode=request.getParameter("mode");
+	context.put("mode",mode);
+	if(mode!=null && !mode.equals("add"))
+	{
+		User dbUser = new User();
+		dbUser.connection = connection;
+		dbUser.id=id;
+		dbUser.load();
+		context.put("dbuser",dbUser);
+	}
+	else
+	{
+		User dbUser = new User();
+		context.put("dbuser",dbUser);
+	}
+	
+	ArrayList groups = DbCollections.getAllGroups(connection, user);
+	context.put("groups",groups);
+	
+	templatename="edituser.vm";
+}

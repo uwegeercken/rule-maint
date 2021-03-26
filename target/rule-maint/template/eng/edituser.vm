@@ -1,0 +1,76 @@
+#set($pagetitle='User Maintenance')
+<p class="heading">#if($mode!="add")Edit user: <b>$!{dbuser.name}</b>#else Add user#end</p>
+<p><img id="helpimg" height="22" width="22" src="img/help_black.png" title="show help" onclick="switchHelp()"><a href="process?action=bsh&ro=1&scriptname=listusers"><img class="go_back" height="22" width="22" src="img/go_back.png" title="go back: List of users"></a></p>
+<div id="help">
+	<p class="helptitle">#if($mode=="add")Add User #else Edit User#end</p>
+	<p>Enter the userid and name of the user.</p> 
+	<p>Members of the admin group have full access to all parts of the application. Members of a group will have read and write access to projects, that belong to this group. Projects which belong to a group that the user is not a member of will be visible but the user can not change the project, groups, rules or actions. If a project is marked as private, users who are not a member of the group that the project belongs to, can not see the project.</p>
+</div>
+<div class="formbox">
+#if($mode=="add")
+	<form method="POST" action="process?action=bsh&scriptname=edituser"> 
+	
+#else
+	<form method="POST" action="process?action=bsh&scriptname=edituser&id=${dbuser.id}"> 
+#end
+<input type="hidden" name="id" value="${dbuser.id}">
+<table align="center" width="95%" border="0">
+	<tr> 
+		<td>Userid:</td>
+		<td>
+			<input name="userid" type="text" size="15" maxlength="80" value="$!{dbuser.userid}">
+		</td>
+	</tr>
+	<tr> 
+		<td>Name:</td>
+		<td>
+			<input name="name" type="text" size="40" maxlength="80" value="$!{dbuser.name}">
+		</td>
+	</tr>
+	<tr> 
+		<td>Email:</td>
+		<td>
+			<input name="email" type="text" size="40" maxlength="80" value="$!{dbuser.email}">
+		</td>
+	</tr>
+	#if($mode=="add")
+	<tr> 
+		<td>Password:</td>
+		<td>
+			<input name="password" type="password" size="40" maxlength="40" value="">
+		</td>
+	</tr>
+	
+	#end
+	<tr><td colspan="2"></br><hr></td></tr>
+	<tr><td colspan="2">Group Membership:</td></tr>
+	#foreach($group in $groups)
+	<tr>
+		<td style="padding-left:20px;">$group.name</td>
+		<td>
+			<input type="checkbox" name="groups" value="${group.id}" #if(${dbuser.isInGroup(${group.name})})checked#end>
+		</td>
+	</tr>
+	#end
+	<tr>
+	#if($mode && ($mode=="inserted" || $mode=="updated"))
+		<td colspan="2" align="center"><br />
+			<input type="submit" value="close" name="submit">
+		</td>
+	#else
+		<td colspan="2" align="center"><br />
+			<input type="submit" value="save" name="submit">
+			<input type="submit" value="cancel" name="submit">
+		</td>
+	#end
+	</tr>
+</table>
+</form>
+</div>
+#if(${dbuser.id}>0)
+	<p class="small">last edited: ${dbuser.lastUpdate}</p>
+#end
+#if (${infomessage})
+	<p align="center">#insert_message($infomessage)</p>
+#end
+

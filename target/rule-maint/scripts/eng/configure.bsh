@@ -1,0 +1,40 @@
+import java.io.FileOutputStream;
+import java.util.Properties;
+import com.datamelt.db.MySqlConnection;
+import com.datamelt.web.Controller;
+
+if(user!=null)
+{
+	adminaction="true";
+}
+
+cancelled= request.getParameter("submit");
+
+Properties p = new Properties();
+p.put("ldap_hostname",request.getParameter("ldap_hostname"));
+p.put("ldap_port",request.getParameter("ldap_port"));
+p.put("ldap_domain",request.getParameter("ldap_domain"));
+
+p.put("export_path",request.getParameter("export_path"));
+p.put("backup_path",request.getParameter("backup_path"));
+
+context.put("configuration",p);
+
+if(cancelled.equals("save"))
+{
+	try
+	{
+		FileOutputStream fileOut = new FileOutputStream(contextpath + "/" + configfile);
+		p.store(fileOut, "configuration updated using Business Rule Maintenance Tool.");
+		fileOut.close();
+		infomessage.text="configuration saved to file: " + configfile + ".";
+		
+		Controller.reloadConfig();
+	}
+	catch(Exception ex)
+	{
+		infomessage.text="error saving configuration to file: " + configfile + ". error: " + ex.getMessage();
+	}
+}	
+	
+templatename="configure.vm";

@@ -1,0 +1,22 @@
+import com.datamelt.db.Project;
+import com.datamelt.db.DbCollections;
+
+writeaction="true";
+if(user==null)
+{
+	templatename="login.vm";
+}
+else
+{
+	ArrayList list = DbCollections.getAllGroups(connection, user);
+	context.put("groups",list);
+	
+	Project project = new Project();
+	project.objectClassname = "com.datamelt.util.RowFieldCollection";
+	project.objectMethodGetter = "getFieldValue";
+	project.objectMethodSetter = "setFieldValue";
+	
+	context.put("project",project);
+	
+	templatename="importfile.vm";
+}

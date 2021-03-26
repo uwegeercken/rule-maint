@@ -1,0 +1,45 @@
+#set($pagetitle='Configuration')
+<p class="heading">Configuration of the Rules Maintenance Tool</p>
+<p>When a Project Export Folder is specified, then exporting a project will store the resulting file there. Otherwise the user can select the location through the Web Browser.</p>
+<p>If a backup folder is specified, then backups will be put in that folder. Otherwise they are put in the project export folder. If no project export folder is defined there will be no automatic backup of the project files.</p>
+<p>Optionally you can specify the LDAP server details below, to authenticate a user login against the LDAP server. Provide the LDAP server hostname (without domain name) or IP address, the port and the domain name of the server (e.g. mydomain.com).</p>
+<div class="formbox">
+<form method="POST" action="process?action=bsh&scriptname=configure"> 
+<table align="center" width="95%" border="0">
+	<tr> 
+		<td>Project Export Folder:</td>
+		<td>
+			<input name="export_path" type="text" size="40" maxlength="255" value="$!{configuration.getProperty("export_path")}">
+		</td>
+	</tr>
+	<tr> 
+		<td>Project Backup Folder:</td>
+		<td>
+			<input name="backup_path" type="text" size="40" maxlength="255" value="$!{configuration.getProperty("backup_path")}">
+		</td>
+	</tr>
+	<tr> 
+		<td>LDAP Server Hostname or IP Address and Port:</td>
+		<td>
+			<input name="ldap_hostname" type="text" size="40" maxlength="80" value="$!{configuration.getProperty("ldap_hostname")}"><input name="ldap_port" type="text" size="5" maxlength="5" value="$!{configuration.getProperty("ldap_port")}">
+		</td>
+	</tr>
+	<tr> 
+		<td>LDAP Server Domain Name:</td>
+		<td>
+			<input name="ldap_domain" type="text" size="40" maxlength="80" value="$!{configuration.getProperty("ldap_domain")}">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center"><br />
+			<input type="submit" value="save" name="submit">
+			<input type="submit" value="cancel" name="submit">
+		</td>
+	</tr>
+</table>
+</form>
+</div>
+
+#if (${infomessage})
+	<p align="center">#insert_message($infomessage)</p>
+#end

@@ -1,0 +1,14 @@
+import com.datamelt.db.DbCollections;
+import java.util.ArrayList;
+
+if(user==null)
+{
+	templatename="login.vm";
+}
+else
+{
+		ArrayList list;
+		list = DbCollections.getAllProjects(connection, user);
+		context.put("projects",list);
+		templatename="listprojects.vm";
+}
