@@ -37,7 +37,7 @@ public class RuleGroupTestData extends DatabaseRecord implements Loadable
 	private static final String SELECT_SQL="select * from " + TABLENAME + " where id=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (rulegroup_id, user_id, value) values (?,?,?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + " set rulegroup_id=?, user_id=?, value=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + " set rulegroup_id=?, user_id=?, value=?, last_update=current_timestamp where id =?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";
 
 	public RuleGroupTestData()

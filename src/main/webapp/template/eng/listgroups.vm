@@ -20,6 +20,8 @@
 			<p class="normal">$!group.description</p>
 			<p class="normal">users: $!{group.getUsersAsString()}</p>
 		</div>
-		
+		<div>
+        	<p class="small">updated: $!{group.getLastUpdate(16)}</p>
+        </div>
 	</div>
 #end

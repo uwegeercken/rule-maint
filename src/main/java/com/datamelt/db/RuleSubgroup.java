@@ -46,7 +46,7 @@ public class RuleSubgroup extends DatabaseRecord implements Loadable
 	private static final String SELECT_BY_NAME_SQL="select * from " + TABLENAME + " where name=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (name, description, rulegroup_id, intergroupoperator,ruleoperator,last_update_user_id) values (?,?,?,?,?,?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + " set name=?, description=?, rulegroup_id=?, intergroupoperator=?, ruleoperator=?, last_update_user_id=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + " set name=?, description=?, rulegroup_id=?, intergroupoperator=?, ruleoperator=?, last_update_user_id=?, last_update=current_timestamp where id =?";
     public static final String EXIST_SQL  = "select id from " + TABLENAME + "  where name =? and rulegroup_id=?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";
 

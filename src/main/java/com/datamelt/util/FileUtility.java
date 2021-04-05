@@ -85,4 +85,15 @@ public class FileUtility
     	
     	Files.copy(source, destination);
     }
+
+    public static boolean getFileExists(String filename)
+    {
+        File file = new File(filename);
+        boolean fileExists = false;
+        if(file.isFile() && file.canRead())
+        {
+            fileExists = true;
+        }
+        return fileExists;
+    }
 }

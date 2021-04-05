@@ -1,4 +1,4 @@
-import com.datamelt.db.MySqlConnection;
+import com.datamelt.db.SqliteConnection;
 import com.datamelt.db.DatabaseCreator;
 import com.datamelt.db.Activity;
 
@@ -15,15 +15,13 @@ else
 	
 	if(cancelled.equals("yes"))
 	{
-		MySqlConnection con = null;
+		SqliteConnection con = null;
 		try
 		{
-			// check without specifying the database name
-			con = new MySqlConnection(request.getParameter("db_hostname"),Integer.parseInt(request.getParameter("db_port")),request.getParameter("db_user"),request.getParameter("db_userpassword"));
-			
-			boolean databaseExists = DatabaseCreator.checkExistDatabase(con,request.getParameter("db_name"));
+			boolean databaseExists = DatabaseCreator.checkExistDatabase(request.getParameter("db_name"));
 			if(databaseExists==false)
 			{
+			    con = new SqliteConnection(request.getParameter("db_name"));
 				DatabaseCreator.createDatabase(con,request.getParameter("db_name"));
 				infomessage.text="Created database: [" + request.getParameter("db_name") +"], server [" + request.getParameter("db_hostname")+ "], port ["+ request.getParameter("db_port")+ "]";
 				

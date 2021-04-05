@@ -57,10 +57,10 @@ public class RuleGroup extends DatabaseRecord implements Loadable
 	private static final String SELECT_BY_NAME_SQL	= "select * from " + TABLENAME + " where name=?";
 	
 	public static final String INSERT_SQL 			= "insert into " + TABLENAME + " (name, description, valid_from, valid_until, project_id, last_update_user_id,dependent_rulegroup_id,dependent_rulegroup_execute_if) values (?,?,?,?,?,?,?,?)";
-    public static final String UPDATE_SQL 			= "update " + TABLENAME + " set name=?, description=?, valid_from=?, valid_until=?, project_id=?, last_update_user_id=?, dependent_rulegroup_id=?,dependent_rulegroup_execute_if=? where id =?";
+    public static final String UPDATE_SQL 			= "update " + TABLENAME + " set name=?, description=?, valid_from=?, valid_until=?, project_id=?, last_update_user_id=?, dependent_rulegroup_id=?,dependent_rulegroup_execute_if=?, last_update=current_timestamp where id =?";
     public static final String EXIST_SQL  			= "select id from " + TABLENAME + " where name =? and project_id=?";
     public static final String DELETE_SQL 			= "delete from " + TABLENAME + " where id=?";
-    public static final String ENABLE_DISABLE_SQL	= "update " + TABLENAME + " set disabled=? where id =?";
+    public static final String ENABLE_DISABLE_SQL	= "update " + TABLENAME + " set disabled=?, last_update=current_timestamp where id =?";
 
 	public RuleGroup()
 	{

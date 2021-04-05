@@ -42,7 +42,7 @@ public class CheckMethod extends DatabaseRecord implements Loadable
 	private static final String SELECT_SQL="select * from " + TABLENAME + " where id=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (check_id, compare, compare_to, note, parameter1, parameter1_explanation, parameter2, parameter2_explanation, parameter3, parameter3_explanation) values (?,?,?,?,?,?,?,?,?,?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + " set check_id=?, compare=?, compare_to=?, note=?, parameter1=?, parameter1_explanation=?, parameter2=?, parameter2_explanation=?, parameter3=?, parameter3_explanation=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + " set check_id=?, compare=?, compare_to=?, note=?, parameter1=?, parameter1_explanation=?, parameter2=?, parameter2_explanation=?, parameter3=?, parameter3_explanation=?, last_update=current_timestamp where id =?";
     public static final String EXIST_SQL  = "select id from " + TABLENAME + "  where name =?";
     public static final String EXIST_METHOD_SQL  = "select id from " + TABLENAME + "  where check_id=? and compare=?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";

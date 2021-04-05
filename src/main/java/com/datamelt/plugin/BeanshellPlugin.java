@@ -21,9 +21,9 @@ package com.datamelt.plugin;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.datamelt.db.SqliteConnection;
 import org.apache.velocity.context.Context;
 
-import com.datamelt.db.MySqlConnection;
 import com.datamelt.web.Controller;
 
 import bsh.*;
@@ -37,7 +37,7 @@ public class BeanshellPlugin
         pluginName = name;
     }
     
-    public void process(Context context,Interpreter interpreter, MySqlConnection connection,HttpServletRequest request,HttpServletResponse response)
+    public void process(Context context, Interpreter interpreter, SqliteConnection connection, HttpServletRequest request, HttpServletResponse response)
 	{
         try
         {

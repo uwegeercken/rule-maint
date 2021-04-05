@@ -6,7 +6,7 @@ import java.text.ParseException;
 import com.datamelt.rules.engine.BusinessRulesEngine;
 import com.datamelt.util.RowFieldCollection;
 import com.datamelt.util.RowField;
-import com.datamelt.db.MySqlConnection;
+import com.datamelt.db.SqliteConnection;
 import java.sql.ResultSet;
 import java.util.zip.ZipFile;
 
@@ -64,11 +64,11 @@ else
 			//ruleEngine.actionsPrintStream = null;
 			long counter=0;
 			ArrayList records = new ArrayList();			
-			MySqlConnection testdataConnection;
+			SqliteConnection testdataConnection;
 			boolean error=false;
 			try
 			{
-				testdataConnection = new MySqlConnection(project.databaseHostname,project.databaseName,project.databaseUserid,project.databaseUserPassword);
+				testdataConnection = new SqliteConnection(project.databaseName);
 			}   
 		    catch(Exception ex)
 			{

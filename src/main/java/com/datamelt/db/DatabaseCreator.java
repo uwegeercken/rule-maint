@@ -20,26 +20,19 @@ package com.datamelt.db;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.datamelt.rules.core.action.GenericAction;
 import com.datamelt.rules.implementation.GenericCheck;
-import com.datamelt.util.CheckAnnotation;
-import com.datamelt.util.CheckMethodAnnotation;
-import com.datamelt.util.ActionAnnotation;  
-import com.datamelt.util.ActionMethodAnnotation;
+import com.datamelt.util.*;
 
-import com.datamelt.util.ClassUtility;
 import com.datamelt.web.Controller;
 
 /**
@@ -56,19 +49,16 @@ public class DatabaseCreator
 	/**
 	 * check if the database exists
 	 */
-    public static boolean checkExistDatabase(MySqlConnection connection, String databaseName) throws Exception
+    public static boolean checkExistDatabase(String databaseName) throws Exception
     {
-    	return DbCollections.getCheckDatabaseExists(connection,databaseName);
+    	return FileUtility.getFileExists(databaseName);
     }
     
 	/**
 	 * create the database on the server - if it does not exist
 	 */
-    public static void createDatabase(MySqlConnection connection, String databaseName) throws Exception
+    public static void createDatabase(SqliteConnection connection, String databaseName) throws Exception
     {
-        Statement statementDatabase = connection.getStatement();
-        statementDatabase.execute("create database if not exists " + databaseName);
-        
         File jareJarFile = getJareJarFile();
         
         createDatabaseTables(connection, databaseName);
@@ -94,12 +84,12 @@ public class DatabaseCreator
 	 * create the database tables on the server - if they do not exist.
 	 * 
 	 */
-    public static void createDatabaseTables(MySqlConnection connection, String databaseName) throws Exception
+    public static void createDatabaseTables(SqliteConnection connection, String databaseName) throws Exception
     {
         Statement statement = connection.getStatement();
 
         // use the given database
-    	statement.execute("use " + databaseName);
+    	//statement.execute("use " + databaseName);
         
     	// create all required tables
 
@@ -114,6 +104,7 @@ public class DatabaseCreator
     	try
         {
         	statement.execute(CreateDatabase.CREATE_TABLE_ACTION_METHOD_SQL);
+        	//statement.execute(CreateDatabase.CREATE_TABLE_ACTION_METHOD_SQL_INDEX);
         }
         catch(Exception ex)
         {
@@ -259,12 +250,12 @@ public class DatabaseCreator
 	 * create the database tables base data on the server.
 	 * 
 	 */
-    public static void createDatabaseTablesData(MySqlConnection connection, String databaseName) throws Exception
+    public static void createDatabaseTablesData(SqliteConnection connection, String databaseName) throws Exception
     {
     	 Statement statement = connection.getStatement();
 
          // use the given database
-     	statement.execute("use " + databaseName);
+     	//statement.execute("use " + databaseName);
      	
     	// create all required base data
         try
@@ -310,7 +301,7 @@ public class DatabaseCreator
 	 * create or update the ruleengine checks and check methods.
 	 * 
 	 */
-    public static void createOrUpdateDatabaseTablesChecks(MySqlConnection connection, File jareFile, String databaseName) throws Exception
+    public static void createOrUpdateDatabaseTablesChecks(SqliteConnection connection, File jareFile, String databaseName) throws Exception
     {
     	 ArrayList<Class> checks = getClasses(jareFile, Constants.PACKAGE_RULEENGINE_CHECKS);
          
@@ -342,7 +333,7 @@ public class DatabaseCreator
 	 * create or update the ruleengine checks and check methods.
 	 * 
 	 */
-    public static void createOrUpdateDatabaseTablesActions(MySqlConnection connection, File jareFile, String databaseName) throws Exception
+    public static void createOrUpdateDatabaseTablesActions(SqliteConnection connection, File jareFile, String databaseName) throws Exception
     {
     	 ArrayList<Class> actions = getClasses(jareFile, Constants.PACKAGE_RULEENGINE_ACTIONS);
          
@@ -371,7 +362,7 @@ public class DatabaseCreator
     }
     
     
-    public static void createOrUpdateCheck(MySqlConnection connection, Class<GenericCheck> genericCheck) throws Exception
+    public static void createOrUpdateCheck(SqliteConnection connection, Class<GenericCheck> genericCheck) throws Exception
 	{
 		if(genericCheck.isAnnotationPresent(CheckAnnotation.class))
 		{
@@ -402,7 +393,7 @@ public class DatabaseCreator
 		}
 	}
     
-    public static void createOrUpdateCheckMethod(MySqlConnection connection, Class<GenericCheck> genericCheck) throws Exception
+    public static void createOrUpdateCheckMethod(SqliteConnection connection, Class<GenericCheck> genericCheck) throws Exception
 	{
     	Check check = new Check();
 		check.setConnection(connection);
@@ -477,7 +468,7 @@ public class DatabaseCreator
     	}
 	}
     
-    public static void createOrUpdateAction(MySqlConnection connection, Class<GenericAction> genericAction) throws Exception 
+    public static void createOrUpdateAction(SqliteConnection connection, Class<GenericAction> genericAction) throws Exception
 	{
 
     	Method[] methods = genericAction.getMethods(); 

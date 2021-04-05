@@ -55,7 +55,7 @@ public class Rule extends DatabaseRecord implements Loadable
 	private static final String SELECT_BY_NAME_SQL="select * from " + TABLENAME + " where name=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (rulesubgroup_id, name, description, check_id, object1_parametertype_id,object1_parameter,object1_type_id, object2_parametertype_id,object2_parameter,object2_type_id,expectedvalue,expectedvalue_type_id,additional_parameter,additional_parameter_type_id,message_passed,message_failed, last_update_user_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + " set rulesubgroup_id=?, name=?, description=?, check_id=?, object1_parametertype_id=?,object1_parameter=?,object1_type_id=?, object2_parametertype_id=?,object2_parameter=?,object2_type_id=?,expectedvalue=?,expectedvalue_type_id=?,additional_parameter=?,additional_parameter_type_id=?, message_passed=?,message_failed=?, last_update_user_id=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + " set rulesubgroup_id=?, name=?, description=?, check_id=?, object1_parametertype_id=?,object1_parameter=?,object1_type_id=?, object2_parametertype_id=?,object2_parameter=?,object2_type_id=?,expectedvalue=?,expectedvalue_type_id=?,additional_parameter=?,additional_parameter_type_id=?, message_passed=?,message_failed=?, last_update_user_id=?, last_update=current_timestamp where id =?";
     public static final String EXIST_SQL  = "select id from " + TABLENAME + "  where name =? and rulesubgroup_id=?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";
 

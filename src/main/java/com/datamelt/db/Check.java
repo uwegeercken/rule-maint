@@ -40,7 +40,7 @@ public class Check extends DatabaseRecord implements Loadable
 	private static final String SELECT_BY_NAME_SQL="select * from " + TABLENAME + " where name=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (name, description, name_descriptive, package, class, check_single_field) values (?,?,?,?,?,?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + " set name=?, description=?, name_descriptive=?, package=?, class=?, check_single_field=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + " set name=?, description=?, name_descriptive=?, package=?, class=?, check_single_field=?, last_update=current_timestamp where id =?";
     public static final String EXIST_SQL  = "select id from " + TABLENAME + "  where name =?";
     public static final String EXIST_CLASS_SQL  = "select id from " + TABLENAME + "  where class=?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";

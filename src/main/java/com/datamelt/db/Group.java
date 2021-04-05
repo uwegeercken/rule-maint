@@ -34,8 +34,8 @@ public class Group extends DatabaseRecord implements Loadable
     public static final String INSERT_SQL                     = "insert into groups (name,description) values (?,?)";
     public static final String DELETE_SQL                     = "delete from groups where id=?";
     public static final String REMOVE_ALL_ASSIGNED_USERS_SQL  = "delete from groupuser where groups_id=?";
-    public static final String UPDATE_SQL                     = "update groups set name=?,description=? where id=?";
-    public static final String UPDATE_REMOVED_GROUP_PAGES_SQL = "update page set groups_id=? where groups_id=?";
+    public static final String UPDATE_SQL                     = "update groups set name=?,description=?, last_update=current_timestamp where id=?";
+    public static final String UPDATE_REMOVED_GROUP_PAGES_SQL = "update page set groups_id=?, last_update=current_timestamp where groups_id=?";
 
     public void load() throws Exception
     {

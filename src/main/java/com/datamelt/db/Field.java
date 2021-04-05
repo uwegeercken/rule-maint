@@ -41,7 +41,7 @@ public class Field extends DatabaseRecord implements Loadable
 	private static final String SELECT_BY_NAME_SQL				= "select * from " + TABLENAME + " where name=? and project_id=?";
 	
 	public static final String INSERT_SQL 						= "insert into " + TABLENAME + " (project_id, name, name_descriptive, description, java_type_id,last_update_user_id) values (?,?,?,?,?,?)";
-    public static final String UPDATE_SQL 						= "update " + TABLENAME + " set project_id=?, name=?, name_descriptive=?, description=?,java_type_id=?,last_update_user_id=? where id=?";
+    public static final String UPDATE_SQL 						= "update " + TABLENAME + " set project_id=?, name=?, name_descriptive=?, description=?,java_type_id=?,last_update_user_id=?, last_update=current_timestamp where id=?";
     public static final String EXIST_SQL  						= "select id from  " + TABLENAME + "  where name=? and project_id=?";
     public static final String DELETE_SQL 						= "delete from " + TABLENAME + " where id=?";
 	

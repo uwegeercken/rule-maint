@@ -18,13 +18,34 @@
  */ 
 package com.datamelt.util;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import com.datamelt.db.RuleGroup;
 
 public class DateUtility
 {
+	/**
+	 * expects the provided date to be the UTC timezone value and converts it to local time
+	 */
+	public static String convertUtcToLocal(String date)
+	{
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date localDate = null;
+		try
+		{
+			Date utcDate = sdf.parse(date);
+			localDate = new Date(utcDate.getTime() + Calendar.getInstance().getTimeZone().getOffset(new Date().getTime()));
+		}
+		catch (Exception ex)
+		{
+
+		}
+		return sdf.format(localDate);
+	}
+
 	/**
 	 * checks if the rulegroup valid from and until is within
 	 * the valid from/until of the rulegroup it depends on.

@@ -58,7 +58,7 @@ public class DatabaseUpdate
 	private static final String ADD_CHECK_DATE_TIME_IS_BETWEEN							= "INSERT INTO " + CreateDatabase.TABLE_CHECK + " VALUES (41,'Check Date Time Is Between','Checks if the time part of a date is between two given time value specified in the format HH:mm:ss (hours, minutes, seconds). Separate the time values using a comma.','time part is between','com.datamelt.rules.implementation','CheckDateTimeIsBetween',0,now())";
 	private static final String ADD_CHECK_METHOD_DATE_TIME_IS_BETWEEN					= "INSERT INTO " + CreateDatabase.TABLE_CHECK_METHOD + " VALUES (169,41,'Date','String',NULL,NULL,NULL,NULL,NULL,NULL,NULL,now())";
 
-	public static void alterDatabaseTables(MySqlConnection connection, String dbName)
+	public static void alterDatabaseTables(SqliteConnection connection, String dbName)
 	{
 		// add disabled field. implemented 2018-07-20
 		//alterTable(connection, CHECK_TABLE_RULEGROUP, UPDATE_TABLE_RULEGROUP);
@@ -135,7 +135,7 @@ public class DatabaseUpdate
 		}
 	}
 	
-	private static void alterTable(MySqlConnection connection, String checkSql, String alterSql)
+	private static void alterTable(SqliteConnection connection, String checkSql, String alterSql)
 	{
 		try
 		{
@@ -156,7 +156,7 @@ public class DatabaseUpdate
 		}
 	}
 	
-	private static void insertData(MySqlConnection connection, String tableName, String insertSql) throws Exception
+	private static void insertData(SqliteConnection connection, String tableName, String insertSql) throws Exception
 	{
 		PreparedStatement psId = connection.getPreparedStatement("select max(id) as maxid from " + tableName);
 		ResultSet rs = psId.executeQuery();

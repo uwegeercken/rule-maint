@@ -28,10 +28,7 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.datamelt.db.DbCollections;
-import com.datamelt.db.MySqlConnection;
-import com.datamelt.db.Project;
-import com.datamelt.db.RuleGroup;
+import com.datamelt.db.*;
 
 /**
 * RuleGroupFileCreator. Program to generate a zip file for the JaRe - Java Ruleengine - from the database of the Business Rules Maintenance Tool.
@@ -186,7 +183,7 @@ public class RuleGroupFileCreator {
 			
 			System.out.println(getSystemMessage(LEVEL_INFO,"start of program..."));
 			System.out.println(getSystemMessage(LEVEL_INFO,"getting connection to database: " +fileCreator.dbName));
-			MySqlConnection connection = new MySqlConnection(fileCreator.dbServerHostname,fileCreator.dbServerPort,fileCreator.dbName,fileCreator.dbUser,fileCreator.dbPassword);
+			SqliteConnection connection = new SqliteConnection(fileCreator.dbName);
 			
 			ArrayList<Project> projects = new ArrayList<Project>();
 			if(fileCreator.projectName!=null)

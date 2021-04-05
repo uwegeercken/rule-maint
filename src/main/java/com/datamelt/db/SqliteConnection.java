@@ -23,60 +23,25 @@ import java.io.FileInputStream;
 import java.sql.*;
 import java.util.Properties;
 
-import java.sql.DatabaseMetaData;
-
-public class MySqlConnection 
+public class SqliteConnection
 {
-    private static final String connect    			= "jdbc:mysql://";
-    private static final String connectParameters 	= "useUnicode=false&characterEncoding=UTF-8";
-    private final String jdbcDriver					= "com.mysql.jdbc.Driver";
-    private String hostname;
+    private static final String connect    			= "jdbc:sqlite://";
+    private final String jdbcDriver					= "org.sqlite.JDBC";
     private String databaseName;
 	private Connection connection;
-	private String username;
-    private String password;
-    private int port = 3306;
-    
+
 	private static final String EXCEPTION_CONNECTION_UNDEFINED = "connection object undefined";
-	
-	public MySqlConnection() throws Exception
+
+	public SqliteConnection() throws Exception
 	{
 		loadProperties();
 	}
-    
-	public MySqlConnection(String hostname, String databaseName, String username, String password) throws Exception
+
+	public SqliteConnection(String databaseName) throws Exception
 	{
-		this.username = username;
-		this.password = password;
-		this.hostname = hostname;
 		this.databaseName = databaseName;
 		connect();
 	}
-	
-	public MySqlConnection(String hostname, int port,String databaseName, String username, String password) throws Exception
-	{
-		this.username = username;
-		this.password = password;
-		this.hostname = hostname;
-		this.databaseName = databaseName;
-		this.port = port;
-		connect();
-	}
-	
-	public MySqlConnection(String hostname, int port, String username, String password) throws Exception
-	{
-		this.username = username;
-		this.password = password;
-		this.hostname = hostname;
-		this.port = port;
-		connect();
-	}
-	
-	public MySqlConnection(String hostname, String databaseName) throws Exception
-	{
-		this.hostname = hostname;
-		this.databaseName = databaseName;
-	} 
 
 	private void loadProperties() throws Exception
 	{
@@ -84,13 +49,8 @@ public class MySqlConnection
 		File f = new File(getConfigFilePath());
 		FileInputStream input = new FileInputStream(f);
 		props.load(input);
-		hostname       = props.getProperty(Constants.PROPERTY_HOSTNAME);
 		databaseName   = props.getProperty(Constants.PROPERTY_DATABASENAME);
 		input.close();
-		if (hostname==null || hostname.trim().equals(""))
-		{
-			throw new Exception(Constants.PROPERTY_HOSTNAME + " undefined in " + f);
-		}
 		if (databaseName==null || databaseName.trim().equals(""))
 		{
 			throw new Exception(Constants.PROPERTY_DATABASENAME + " undefined in " + f);
@@ -105,11 +65,6 @@ public class MySqlConnection
     public void connect() throws Exception
     {
         this.connection = getConnection();
-    }
-    
-    public String getHostname()
-    {
-        return hostname;
     }
     
     public String getDatabaseName()
@@ -182,16 +137,11 @@ public class MySqlConnection
     private Connection getConnection() throws Exception
     {
         Class.forName(jdbcDriver).newInstance();
-        Connection con;
+        Connection con = null;
         if(databaseName!=null)
         {
-        	con = DriverManager.getConnection(connect + hostname + ":" + port + "/" + databaseName + "?" + connectParameters, username,password);
+        	con = DriverManager.getConnection(connect +  databaseName );
         }
-        else
-        {
-        	con = DriverManager.getConnection(connect + hostname + ":" + port, username,password);
-        }
-        
         return con;
         
     }
@@ -215,7 +165,7 @@ public class MySqlConnection
 	 */
 	public long getLastInsertId() throws Exception
 	{
-		ResultSet rs = getResultSet("select last_insert_id() as lastid");
+		ResultSet rs = getResultSet("select last_insert_rowid() as lastid");
 		rs.next();
 		long lastId = rs.getLong("lastid");
 		rs.close();
@@ -225,10 +175,6 @@ public class MySqlConnection
 	/**
 	 * @return
 	 */
-	public String getUsername() {
-		return username;
-	}
-
 	public void setAutoCommit(boolean status) throws Exception
 	{
 		connection.setAutoCommit(status);
@@ -244,37 +190,10 @@ public class MySqlConnection
 		connection.rollback();
 	}
 
-	public void setUsername(String username)
-	{
-		this.username = username;
-	}
-
-	public void setPassword(String password) 
-	{
-		this.password = password;
-	}
-
-	public int getPort()
-	{
-		return port;
-	}
-
-	public void setHostname(String hostname) 
-	{
-		this.hostname = hostname;
-	}
-
-	public void setDatabaseName(String databaseName) 
+	public void setDatabaseName(String databaseName)
 	{
 		this.databaseName = databaseName;
 	}
-
-	public void setPort(int port) 
-	{
-		this.port = port;
-	}
-	
-	
 
 }
 

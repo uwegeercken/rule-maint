@@ -36,7 +36,7 @@ public class JareVersion extends DatabaseRecord implements Loadable
 	private static final String SELECT_VERSION_SQL="select * from " + TABLENAME + " where version=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (version) values (?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + " set version=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + " set version=?, last_update=current_timestamp where id =?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";
 
 	public JareVersion()

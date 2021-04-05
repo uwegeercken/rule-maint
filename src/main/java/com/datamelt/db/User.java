@@ -43,10 +43,10 @@ public class User extends DatabaseRecord implements Loadable
     private static final String TABLENAME					= "user";
     private static final String TABLENAME_GROUPUSER			= "groupuser";
     
-    public static final String UPDATE_PASSWORD_SQL          = "update " + TABLENAME + " set password=password(?), password_update_date=? where id =?";
-    public static final String UPDATE_LASTLOGIN_SQL         = "update " + TABLENAME + " set lastlogin=? where id =?";
-    public static final String UPDATE_SQL       		    = "update " + TABLENAME + " set userid=?, name=?, email=?, generated_code=? where id =?";
-    public static final String ACTIVATE_DEACTIVATE_SQL	    = "update " + TABLENAME + " set deactivated=?, deactivated_date=? where id =?";
+    public static final String UPDATE_PASSWORD_SQL          = "update " + TABLENAME + " set password=password(?), password_update_date=?, last_update=current_timestamp where id =?";
+    public static final String UPDATE_LASTLOGIN_SQL         = "update " + TABLENAME + " set lastlogin=?, last_update=current_timestamp where id =?";
+    public static final String UPDATE_SQL       		    = "update " + TABLENAME + " set userid=?, name=?, email=?, generated_code=?, last_update=current_timestamp where id =?";
+    public static final String ACTIVATE_DEACTIVATE_SQL	    = "update " + TABLENAME + " set deactivated=?, deactivated_date=?, last_update=current_timestamp where id =?";
     public static final String DELETE_SQL	    			= "delete from " + TABLENAME + " where id =?";
     public static final String ADD_GROUP_MEMBERSHIP  	    = "insert into " + TABLENAME_GROUPUSER + " (groups_id,user_id) values (?,?)";
     public static final String DELETE_GROUP_MEMBERSHIP	    = "delete from " + TABLENAME_GROUPUSER + " where groups_id=? and user_id=?";
@@ -412,7 +412,7 @@ public class User extends DatabaseRecord implements Loadable
     
     private boolean checkDbLoginOk(String password) throws Exception
     {
-        String sql="select password=password('" + password + "') as pwdok from user where userid='" + getUserid()+"'";
+        String sql="select password='" + password + "' as pwdok from user where userid='" + getUserid()+"'";
         ResultSet rs = getConnection().getResultSet(sql);
         int passwordOk=0;
         if(rs.next())

@@ -21,19 +21,12 @@ package com.datamelt.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.datamelt.db.DbCollections;
-import com.datamelt.db.MySqlConnection;
-import com.datamelt.db.Project;
-import com.datamelt.db.Rule;
-import com.datamelt.db.RuleGroup;
-import com.datamelt.db.RuleGroupAction;
-import com.datamelt.db.RuleSubgroup;
-import com.datamelt.db.User;
+import com.datamelt.db.*;
 import com.datamelt.db.Field;
 
 public class ProjectCopyUtility 
 {
-	public static void copy(Project originalProject, Project newProject, User user, MySqlConnection connection) throws Exception
+	public static void copy(Project originalProject, Project newProject, User user, SqliteConnection connection) throws Exception
 	{
 		ArrayList <RuleGroup>ruleGroups = DbCollections.getAllRuleGroups(connection,originalProject.getId());
 		newProject.setRulegroups(ruleGroups);

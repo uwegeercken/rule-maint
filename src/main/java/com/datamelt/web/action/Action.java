@@ -23,16 +23,16 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.datamelt.db.SqliteConnection;
 import org.apache.velocity.context.Context;
 
-import com.datamelt.db.MySqlConnection;
 import com.datamelt.plugin.BeanshellPlugin;
 
 import bsh.Interpreter;
 
 public abstract class Action  
 {
-    private MySqlConnection connection;
+    private SqliteConnection connection;
     private boolean databaseConnectionOk = false;
     private boolean hostConnectionOk = false;
     public static final String DEFAULT_VELOCITY_OBJECT = "dbObject";
@@ -50,12 +50,12 @@ public abstract class Action
 	    return adjustedString;
 	}
 	
-	public void setConnection(MySqlConnection con)
+	public void setConnection(SqliteConnection con)
 	{
 	    this.connection = con;
 	}
 	
-	protected MySqlConnection getConnection()
+	protected SqliteConnection getConnection()
 	{
 	    return connection;
 	}

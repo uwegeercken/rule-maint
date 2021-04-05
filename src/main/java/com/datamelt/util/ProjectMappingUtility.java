@@ -20,16 +20,10 @@ package com.datamelt.util;
 
 import java.util.ArrayList;
 
-import com.datamelt.db.Action;
-import com.datamelt.db.Check;
-import com.datamelt.db.DbCollections;
-import com.datamelt.db.MySqlConnection;
-import com.datamelt.db.Project;
-import com.datamelt.db.Rule;
-import com.datamelt.db.RuleGroup;
-import com.datamelt.db.RuleGroupAction;
-import com.datamelt.db.RuleSubgroup;
-import com.datamelt.db.Type;
+import com.datamelt.db.*;
+import com.datamelt.rules.core.RuleSubGroup;
+import com.datamelt.rules.core.XmlAction;
+import com.datamelt.rules.core.XmlRule;
 
 public class ProjectMappingUtility 
 {
@@ -68,7 +62,7 @@ public class ProjectMappingUtility
 
 	}
 	
-	public static RuleSubgroup mapRuleSubgroup(RuleGroup dbRuleGroup, com.datamelt.rules.core.RuleSubGroup subgroup, MySqlConnection connection) throws Exception
+	public static RuleSubgroup mapRuleSubgroup(RuleGroup dbRuleGroup, RuleSubGroup subgroup, SqliteConnection connection) throws Exception
 	{
 		RuleSubgroup dbRuleSubGroup = new RuleSubgroup();
 		dbRuleSubGroup.setName(subgroup.getId());
@@ -82,7 +76,7 @@ public class ProjectMappingUtility
 		return dbRuleSubGroup;
 	}
 	
-	public static Rule mapRules(RuleSubgroup dbRuleSubgroup, com.datamelt.rules.core.XmlRule rule , MySqlConnection connection) throws Exception
+	public static Rule mapRules(RuleSubgroup dbRuleSubgroup, XmlRule rule , SqliteConnection connection) throws Exception
 	{
 		ArrayList <Type>dbTypes = DbCollections.getAllTypes(connection);
 		ArrayList <Check>dbChecks = DbCollections.getAllChecks(connection); 
@@ -105,7 +99,7 @@ public class ProjectMappingUtility
 		return dbRule;
 	}
 	
-	public static RuleGroupAction mapAction(RuleGroup dbRuleGroup, com.datamelt.rules.core.XmlAction action, MySqlConnection connection) throws Exception
+	public static RuleGroupAction mapAction(RuleGroup dbRuleGroup, XmlAction action, SqliteConnection connection) throws Exception
 	{
 		ArrayList <Type>dbTypes = DbCollections.getAllTypes(connection);
 		
@@ -146,7 +140,7 @@ public class ProjectMappingUtility
 		return dbAction;
 	}
 	
-	private static void mapActionParameters(ArrayList <Type>dbTypes, RuleGroupAction dbAction, com.datamelt.rules.core.XmlAction action, MySqlConnection connection) throws Exception
+	private static void mapActionParameters(ArrayList <Type>dbTypes, RuleGroupAction dbAction, XmlAction action, SqliteConnection connection) throws Exception
 	{
 		if(action.getParameters().size()>0)
 		{
@@ -168,7 +162,7 @@ public class ProjectMappingUtility
 		}
 	}
 	
-	private static void mapActionSetterObjects(ArrayList <Type>dbTypes, RuleGroupAction dbAction, com.datamelt.rules.core.XmlAction action, MySqlConnection connection) throws Exception
+	private static void mapActionSetterObjects(ArrayList <Type>dbTypes, RuleGroupAction dbAction, XmlAction action, SqliteConnection connection) throws Exception
 	{
 		if(action.getActionSetterObject()!=null)
 		{
@@ -178,7 +172,7 @@ public class ProjectMappingUtility
 		}
 	}
 	
-	private static void mapActionGetterObjects(ArrayList <Type>dbTypes, RuleGroupAction dbAction, com.datamelt.rules.core.XmlAction action, MySqlConnection connection) throws Exception
+	private static void mapActionGetterObjects(ArrayList <Type>dbTypes, RuleGroupAction dbAction, XmlAction action, SqliteConnection connection) throws Exception
 	{
 		// we only import the first getter object of an action as the web app currently only
 		// supports one getter object
@@ -191,7 +185,7 @@ public class ProjectMappingUtility
 		}
 	}
 	
-	private static Action getDbAction(com.datamelt.rules.core.XmlAction action, MySqlConnection connection) throws Exception
+	private static Action getDbAction(XmlAction action, SqliteConnection connection) throws Exception
 	{
 		ArrayList <Action>dbActions = DbCollections.getAllActions(connection);
 		int found=-1;
@@ -313,7 +307,7 @@ public class ProjectMappingUtility
 		return dbTypes.get(found);
 	}
 	
-	private static void mapRuleParameters(ArrayList <Type>dbTypes, Rule dbRule, com.datamelt.rules.core.XmlRule rule, MySqlConnection connection) throws Exception
+	private static void mapRuleParameters(ArrayList <Type>dbTypes, Rule dbRule, XmlRule rule, SqliteConnection connection) throws Exception
 	{
 		if(rule.getRuleObjects().size()>0)
 		{

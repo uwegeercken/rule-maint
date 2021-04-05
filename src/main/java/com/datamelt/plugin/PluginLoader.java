@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.datamelt.db.SqliteConnection;
 import org.apache.velocity.context.Context;
 
 import bsh.Interpreter;
 
-import com.datamelt.db.MySqlConnection;
 import com.datamelt.web.ConstantsWeb;
 import com.datamelt.web.Controller;
 
@@ -57,7 +57,7 @@ public class PluginLoader
         
     }
     
-    public void processPlugins(Context context, Interpreter interpreter,MySqlConnection connection,HttpServletRequest request,HttpServletResponse response)
+    public void processPlugins(Context context, Interpreter interpreter, SqliteConnection connection, HttpServletRequest request, HttpServletResponse response)
     {
         if(plugins!=null)
         {
@@ -69,7 +69,7 @@ public class PluginLoader
         }
     }
     
-    public void processPlugin(String name, Context context, Interpreter interpreter,MySqlConnection connection,HttpServletRequest request,HttpServletResponse response)
+    public void processPlugin(String name, Context context, Interpreter interpreter,SqliteConnection connection,HttpServletRequest request,HttpServletResponse response)
     {
         if(plugins!=null)
         {

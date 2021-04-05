@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import com.datamelt.db.Project;
 import com.datamelt.util.DateUtility;
 
 public class DbCollections
@@ -32,7 +31,7 @@ public class DbCollections
 	/**
 	 * get a list of all projects 
 	 */
-    public static ArrayList<Project> getAllProjects(MySqlConnection connection) throws Exception
+    public static ArrayList<Project> getAllProjects(SqliteConnection connection) throws Exception
     {
         String sql="select id from project" +
         	" order by name";
@@ -56,7 +55,7 @@ public class DbCollections
 	/**
 	 * get a list of all projects for a given user 
 	 */
-    public static ArrayList<Project> getAllProjects(MySqlConnection connection, User user) throws Exception
+    public static ArrayList<Project> getAllProjects(SqliteConnection connection, User user) throws Exception
     {
         String sql="select id as id from project" +
         		" order by name";
@@ -90,7 +89,7 @@ public class DbCollections
 	/**
 	 * get a list of all rulegroups for a given project 
 	 */
-    public static ArrayList<RuleGroup> getAllRuleGroups(MySqlConnection connection, long projectId) throws Exception
+    public static ArrayList<RuleGroup> getAllRuleGroups(SqliteConnection connection, long projectId) throws Exception
     {
         String sql="select id from rulegroup where project_id=" + projectId +
         	" and (disabled=0 or disabled is null)" +
@@ -114,7 +113,7 @@ public class DbCollections
 	/**
 	 * get a list of all disabled rulegroups for a given project 
 	 */
-    public static ArrayList<RuleGroup> getAllDisabledRuleGroups(MySqlConnection connection, long projectId) throws Exception
+    public static ArrayList<RuleGroup> getAllDisabledRuleGroups(SqliteConnection connection, long projectId) throws Exception
     {
         String sql="select id from rulegroup where project_id=" + projectId +
         	" and disabled=1" +
@@ -138,7 +137,7 @@ public class DbCollections
     /**
 	 * get a list of all testdata for a given rulegroup 
 	 */
-    public static ArrayList<RuleGroupTestData> getAllRuleGroupTestData(MySqlConnection connection, long ruleGroupId, long userId) throws Exception
+    public static ArrayList<RuleGroupTestData> getAllRuleGroupTestData(SqliteConnection connection, long ruleGroupId, long userId) throws Exception
     {
         String sql="select id from rulegroup_testdata where rulegroup_id=" + ruleGroupId +
         		" and user_id= " + userId + " order by id desc";
@@ -159,7 +158,7 @@ public class DbCollections
     /**
 	 * get a list of only the latest testdata for a given rulegroup 
 	 */
-    public static ArrayList<RuleGroupTestData> getLatestRuleGroupTestData(MySqlConnection connection, long ruleGroupId, long userId) throws Exception
+    public static ArrayList<RuleGroupTestData> getLatestRuleGroupTestData(SqliteConnection connection, long ruleGroupId, long userId) throws Exception
     {
         String sql="select id from rulegroup_testdata where rulegroup_id=" + ruleGroupId +
         	" and user_id= " + userId + " order by id desc limit 1";
@@ -180,7 +179,7 @@ public class DbCollections
     /**
 	 * get a list of all testdata for a given rulegroup 
 	 */
-    public static long getCountRuleGroupTestData(MySqlConnection connection, long ruleGroupId, long userId) throws Exception
+    public static long getCountRuleGroupTestData( SqliteConnection connection, long ruleGroupId, long userId) throws Exception
     {
         String sql="select count(id) as counter from rulegroup_testdata where rulegroup_id=" + ruleGroupId +
         	" and user_id= " + userId;
@@ -197,7 +196,7 @@ public class DbCollections
     /**
      *  get a list of possible dependent rulegroups for the given rulegroup
      */
-    public static ArrayList<RuleGroup> getAllPossibleDependentRuleGroups(MySqlConnection connection, long projectId, long rulegroupId) throws Exception
+    public static ArrayList<RuleGroup> getAllPossibleDependentRuleGroups(SqliteConnection connection, long projectId, long rulegroupId) throws Exception
     {
     	ArrayList <RuleGroup>list = new ArrayList<RuleGroup>();
     	
@@ -230,7 +229,7 @@ public class DbCollections
     /**
      * get a list of rulegroups that have a dependency to the specified group
      */
-    public static ArrayList<RuleGroup> getAllDependentRuleGroups(MySqlConnection connection, long projectId, long rulegroupId) throws Exception
+    public static ArrayList<RuleGroup> getAllDependentRuleGroups(SqliteConnection connection, long projectId, long rulegroupId) throws Exception
     {
     	ArrayList <RuleGroup>list = new ArrayList<RuleGroup>();
     	
@@ -254,7 +253,7 @@ public class DbCollections
     /**
      *  get a list of all rulegroups that other groups in the project depend on
      */
-    public static ArrayList<RuleGroup> getAllDependentRuleGroups(MySqlConnection connection, long projectId) throws Exception
+    public static ArrayList<RuleGroup> getAllDependentRuleGroups(SqliteConnection connection, long projectId) throws Exception
     {
     	ArrayList <RuleGroup>list = new ArrayList<RuleGroup>();
     	
@@ -281,7 +280,7 @@ public class DbCollections
     /**
      * get a count of how many rulegroups have a dependancy on the given rulegroup 
      */
-    public static long getCountGroupsDependingOnThisGroup(MySqlConnection connection, long projectId, long rulegroupId) throws Exception
+    public static long getCountGroupsDependingOnThisGroup(SqliteConnection connection, long projectId, long rulegroupId) throws Exception
     {
     	// check how many rulegroups depend on the given rulegroup
     	String sql="select count(1) as counter from rulegroup"
@@ -302,7 +301,7 @@ public class DbCollections
      * get all rulegroups which have a valid from or valid until setting that is not within the boundaries of the
      * provided rulegroup valid from and valid until 
      */
-    public static ArrayList<RuleGroup> getRuleGroupsDependingWithInvalidFromUntil(MySqlConnection connection, long projectId, RuleGroup dependentRulegroup) throws Exception
+    public static ArrayList<RuleGroup> getRuleGroupsDependingWithInvalidFromUntil(SqliteConnection connection, long projectId, RuleGroup dependentRulegroup) throws Exception
     {
     	// check how many rulegroups depend on the given rulegroup and that have an
     	// invalid from/until validity (outside the validity of the rulegroup)
@@ -372,7 +371,7 @@ public class DbCollections
     	return sdf.format(minimumDate.getTime()) + "/" + sdf.format(maximumDate.getTime());
     }
     
-    public static ArrayList<RuleGroup> getAllRuleGroupsSubgroupsActions(MySqlConnection connection, long projectId) throws Exception
+    public static ArrayList<RuleGroup> getAllRuleGroupsSubgroupsActions(SqliteConnection connection, long projectId) throws Exception
     {
         String sql="select id from rulegroup where project_id=" + projectId +
         	" and (disabled=0 or disabled is null)" +
@@ -399,7 +398,7 @@ public class DbCollections
     /**
      * get a count of all rulegroups for a given project 
      */
-    public static long getAllRuleGroupsCount(MySqlConnection connection, long projectId) throws Exception
+    public static long getAllRuleGroupsCount(SqliteConnection connection, long projectId) throws Exception
     {
         String sql="select count(1) as counter from rulegroup"
         		+ " where project_id=" + projectId
@@ -418,7 +417,7 @@ public class DbCollections
     /**
      * get a count of all reference fields for a given project 
      */
-    public static long getAllReferenceFieldsCount(MySqlConnection connection, long projectId) throws Exception
+    public static long getAllReferenceFieldsCount(SqliteConnection connection, long projectId) throws Exception
     {
         String sql="select count(1) as counter from reference_fields"
         		+ " where project_id=" + projectId;
@@ -436,7 +435,7 @@ public class DbCollections
     /**
      * get a rulegroup by providing it's name
      */
-    public RuleGroup getRuleGroupByName(MySqlConnection connection, long projectId, String groupName) throws Exception
+    public RuleGroup getRuleGroupByName(SqliteConnection connection, long projectId, String groupName) throws Exception
     {
     	ArrayList <RuleGroup>list = getAllRuleGroups(connection, projectId);
     	int found=-1;
@@ -462,7 +461,7 @@ public class DbCollections
     /**
      * get all valid rulegroups for a given project that are valid on the specified date or that are valid in the future
      */
-    public static ArrayList<RuleGroup> getAllValidRuleGroups(MySqlConnection connection, long projectId, String selectedDate) throws Exception
+    public static ArrayList<RuleGroup> getAllValidRuleGroups(SqliteConnection connection, long projectId, String selectedDate) throws Exception
     {
         // select all rulegroups that are valid at the moment or that are
     	// valid in the future
@@ -487,7 +486,7 @@ public class DbCollections
     /**
      * get a list of all subgroups for a given rulegroup 
      */
-    public static ArrayList<RuleSubgroup> getAllRuleSubgroups(MySqlConnection connection, long rulegroupId) throws Exception
+    public static ArrayList<RuleSubgroup> getAllRuleSubgroups(SqliteConnection connection, long rulegroupId) throws Exception
     {
         String sql="select id from rulesubgroup"
         		+ " where rulegroup_id=" + rulegroupId
@@ -509,7 +508,7 @@ public class DbCollections
     /**
      * get a list of all actions for a given rulegroup 
      */
-    public static ArrayList<RuleGroupAction> getAllRuleGroupActions(MySqlConnection connection, long rulegroupId) throws Exception
+    public static ArrayList<RuleGroupAction> getAllRuleGroupActions(SqliteConnection connection, long rulegroupId) throws Exception
     {
         String sql="select id from rulegroupaction"
         		+ " where rulegroup_id=" + rulegroupId 
@@ -531,7 +530,7 @@ public class DbCollections
     /**
      * get a list of all reference fields for a given project
      */
-    public static ArrayList<Field> getAllFields(MySqlConnection connection, long projectId) throws Exception
+    public static ArrayList<Field> getAllFields(SqliteConnection connection, long projectId) throws Exception
     {
         String sql="select id from reference_fields"
         		+ " where project_id=" + projectId 
@@ -551,28 +550,9 @@ public class DbCollections
     }
     
     /**
-     * get a list of all databases
-     */
-    public static boolean getCheckDatabaseExists(MySqlConnection connection, String databaseName) throws Exception
-    {
-    	ResultSet resultSet = connection.getMetaData().getCatalogs();
-    	boolean exists = false;
-    	while(resultSet.next())
-        {
-    		String name = resultSet.getString(1);
-    		if(name.trim().toLowerCase().equals(databaseName.trim().toLowerCase()))
-    		{
-    			exists = true;
-    		}
-        }
-    	resultSet.close();
-        return exists;
-    }
-    
-    /**
      * get a list of all users that are assigned to a given group 
      */
-    public static ArrayList<User> getAllGroupUsers(MySqlConnection connection, String groupName) throws Exception
+    public static ArrayList<User> getAllGroupUsers(SqliteConnection connection, String groupName) throws Exception
     {
         String sql="select user_id from groups, groupuser" + 
         	" where groupuser.groups_id=groups.id "+
@@ -594,7 +574,7 @@ public class DbCollections
     /**
      * get a list of all users that are assigned to a given group 
      */
-    public static ArrayList<User> getAllGroupUsers(MySqlConnection connection, long groupId) throws Exception
+    public static ArrayList<User> getAllGroupUsers(SqliteConnection connection, long groupId) throws Exception
     {
         String sql="select user_id from groups, groupuser" + 
         	" where groupuser.groups_id=groups.id "+
@@ -616,7 +596,7 @@ public class DbCollections
     /**
      * get a list of all groups that the given user is assigned to 
      */
-    public static ArrayList<Group> getAllGroups(MySqlConnection connection, User user) throws Exception
+    public static ArrayList<Group> getAllGroups(SqliteConnection connection, User user) throws Exception
     {
         String sql="select id from groups order by name";	
         ResultSet rs = connection.getResultSet(sql);
@@ -643,7 +623,7 @@ public class DbCollections
     /**
      * get a list of rules according to a specified search term and date (if specified) 
      */
-    public static ArrayList<Rule> getSearchRules(MySqlConnection connection, User user, String searchTerm, String searchDate) throws Exception
+    public static ArrayList<Rule> getSearchRules(SqliteConnection connection, User user, String searchTerm, String searchDate) throws Exception
     {
         String sql="select rule.id as ruleid, rulegroup.id as rulegroupid, rulegroup.project_id as projectid"
         		+ " from rule, rulesubgroup, rulegroup"
@@ -689,7 +669,7 @@ public class DbCollections
     /**
      * get a list of actions according to a specified search term 
      */
-    public static ArrayList<RuleGroupAction> getSearchActions(MySqlConnection connection, User user, String searchTerm, String searchDate) throws Exception
+    public static ArrayList<RuleGroupAction> getSearchActions(SqliteConnection connection, User user, String searchTerm, String searchDate) throws Exception
     {
         String sql="select rulegroupaction.id as rulegroupactionid, rulegroup.project_id as projectid"
         		+ " from rulegroupaction, rulegroup"
@@ -732,7 +712,7 @@ public class DbCollections
     /**
      * get a list of fields (contained in a rule) according to a specified search term and date (if specified) 
      */
-    public static ArrayList<Rule> getSearchFieldsRules(MySqlConnection connection, User user, String searchTerm, String searchDate) throws Exception
+    public static ArrayList<Rule> getSearchFieldsRules(SqliteConnection connection, User user, String searchTerm, String searchDate) throws Exception
     {
         String sql="select rule.id as ruleid, rulegroup.id as rulegroupid, rulegroup.project_id as projectid"
         		+ " from rule, rulesubgroup, rulegroup"
@@ -778,7 +758,7 @@ public class DbCollections
     /**
      * get a list of fields (contained in an action) according to a specified search term and date (if specified) 
      */
-    public static ArrayList<RuleGroupAction> getSearchFieldsActions(MySqlConnection connection, User user, String searchTerm, String searchDate) throws Exception
+    public static ArrayList<RuleGroupAction> getSearchFieldsActions(SqliteConnection connection, User user, String searchTerm, String searchDate) throws Exception
     {
         String sql="select rulegroupaction.id as rulegroupactionid, rulegroup.project_id as projectid"
         		+ " from rulegroupaction, rulegroup"
@@ -822,7 +802,7 @@ public class DbCollections
     /**
      * get a list of all users 
      */
-    public static ArrayList <User> getAllUsers(MySqlConnection connection) throws Exception
+    public static ArrayList <User> getAllUsers(SqliteConnection connection) throws Exception
     {
         String sql="select id from user where deactivated=0" + 
         	" order by name";	
@@ -843,7 +823,7 @@ public class DbCollections
     /**
      * get a list of all deactivated users 
      */
-    public static ArrayList <User> getAllDeactivatedUsers(MySqlConnection connection) throws Exception
+    public static ArrayList <User> getAllDeactivatedUsers(SqliteConnection connection) throws Exception
     {
         String sql="select id from user where deactivated=1" + 
         	" order by name";	
@@ -864,7 +844,7 @@ public class DbCollections
     /**
      * get a list of all checks available 
      */
-    public static ArrayList <Check> getAllChecks(MySqlConnection connection) throws Exception
+    public static ArrayList <Check> getAllChecks(SqliteConnection connection) throws Exception
     {
         String sql="select id from `check`" + 
         	" order by name_descriptive";
@@ -885,7 +865,7 @@ public class DbCollections
     /**
      * retrieve a list of methods available for a given check 
      */
-    public static ArrayList <CheckMethod> getAllCheckMethods(MySqlConnection connection, long checkId) throws Exception
+    public static ArrayList <CheckMethod> getAllCheckMethods(SqliteConnection connection, long checkId) throws Exception
     {
     	String sql="select id from check_method where check_id=" + checkId ;
         ResultSet rs = connection.getResultSet(sql);
@@ -905,7 +885,7 @@ public class DbCollections
     /**
      * determine if a method exists for a given check 
      */
-    public static boolean getCheckMethodExists(MySqlConnection connection, long checkId, String compareType, String compareToType) throws Exception
+    public static boolean getCheckMethodExists(SqliteConnection connection, long checkId, String compareType, String compareToType) throws Exception
     {
     	String compareTypeSql;
         if(compareType==null)
@@ -954,7 +934,7 @@ public class DbCollections
     /**
      * determine if a specified method of an action exists 
      */
-    public static boolean getActionMethodExists(MySqlConnection connection, long actionId, String methodTypes, String object2Type) throws Exception
+    public static boolean getActionMethodExists(SqliteConnection connection, long actionId, String methodTypes, String object2Type) throws Exception
     {
     	// array of types the method received
     	String[] methodType;
@@ -1052,7 +1032,7 @@ public class DbCollections
     /**
      * get a list of methods that exist for a given action 
      */
-    public static ArrayList <ActionMethod> getAllActionMethods(MySqlConnection connection, long actionId) throws Exception
+    public static ArrayList <ActionMethod> getAllActionMethods(SqliteConnection connection, long actionId) throws Exception
     {
         String sql="select id from action_method where action_id=" + actionId ;
         ResultSet rs = connection.getResultSet(sql);
@@ -1072,7 +1052,7 @@ public class DbCollections
     /**
      * get a list of actions that exist 
      */
-    public static ArrayList <Action> getAllActions(MySqlConnection connection) throws Exception
+    public static ArrayList <Action> getAllActions(SqliteConnection connection) throws Exception
     {
         String sql="select id from action" + 
         	" order by methoddisplayname";
@@ -1093,7 +1073,7 @@ public class DbCollections
     /**
      * get a list of types that exist 
      */
-    public static ArrayList <Type> getAllTypes(MySqlConnection connection) throws Exception
+    public static ArrayList <Type> getAllTypes(SqliteConnection connection) throws Exception
     {
         String sql="select id from types order by id";
         ResultSet rs = connection.getResultSet(sql);
@@ -1113,7 +1093,7 @@ public class DbCollections
     /**
      * get a list of activities that have occurred 
      */
-    public static ArrayList <Activity> getActivities(MySqlConnection connection) throws Exception
+    public static ArrayList <Activity> getActivities(SqliteConnection connection) throws Exception
     {
         String sql="select id from activity_log order by last_update desc limit 40";
         ResultSet rs = connection.getResultSet(sql);
@@ -1133,7 +1113,7 @@ public class DbCollections
     /**
      * get a count of all rules over all projects
      */
-    public static long getRulesCount(MySqlConnection connection) throws Exception
+    public static long getRulesCount(SqliteConnection connection) throws Exception
     {
         String sql="select count(1) as numberofrules from rule";
         ResultSet rs = connection.getResultSet(sql);
@@ -1149,7 +1129,7 @@ public class DbCollections
     /**
      * get a count of all rules for a given project
      */
-    public static long getRulesCount(MySqlConnection connection, long projectId) throws Exception
+    public static long getRulesCount(SqliteConnection connection, long projectId) throws Exception
     {
         String sql="SELECT count(rule.id) as numberOfRules"
         		+ " FROM rule, rulesubgroup, rulegroup"
@@ -1170,7 +1150,7 @@ public class DbCollections
     /**
      * get a count of all actions over all projects and rulegroups
      */
-    public static long getActionsCount(MySqlConnection connection) throws Exception
+    public static long getActionsCount(SqliteConnection connection) throws Exception
     {
         String sql="select count(1) as numberofactions"
         		+ " from rulegroupaction,rulegroup"
@@ -1189,7 +1169,7 @@ public class DbCollections
     /**
      * get a count of all projects
      */
-    public static long getProjectsCount(MySqlConnection connection) throws Exception
+    public static long getProjectsCount(SqliteConnection connection) throws Exception
     {
         String sql="select count(1) as numberofprojects from project";
         ResultSet rs = connection.getResultSet(sql);
@@ -1205,7 +1185,7 @@ public class DbCollections
     /**
      * get a count of all users
      */
-    public static long getUsersCount(MySqlConnection connection) throws Exception
+    public static long getUsersCount(SqliteConnection connection) throws Exception
     {
         String sql="select count(1) as numberofusers from user where deactivated=0";
         ResultSet rs = connection.getResultSet(sql);
@@ -1221,7 +1201,7 @@ public class DbCollections
     /**
      * delete the history of a given user and a given type
      */
-    public static void deleteUserHistory(MySqlConnection connection, String type, long typeId, User user) throws Exception
+    public static void deleteUserHistory(SqliteConnection connection, String type, long typeId, User user) throws Exception
     {
     	String deleteSql = "delete from history where type=? and type_id=? and user_id=?";
     	PreparedStatement psHistory = connection.getPreparedStatement(deleteSql);
@@ -1235,7 +1215,7 @@ public class DbCollections
     /**
      * delete the complete history of a given user
      */
-    public static void deleteUserHistory(MySqlConnection connection, User user) throws Exception
+    public static void deleteUserHistory(SqliteConnection connection, User user) throws Exception
     {
     	String deleteSql = "delete from history where user_id=?";
     	PreparedStatement psHistory = connection.getPreparedStatement(deleteSql);
@@ -1247,7 +1227,7 @@ public class DbCollections
     /**
      * delete the complete testdata of a given user
      */
-    public static void deleteUserRuleGroupTestData(MySqlConnection connection, User user) throws Exception
+    public static void deleteUserRuleGroupTestData(SqliteConnection connection, User user) throws Exception
     {
     	String deleteSql = "delete from rulegroup_testdata where user_id=?";
     	PreparedStatement psTestData = connection.getPreparedStatement(deleteSql);
@@ -1259,7 +1239,7 @@ public class DbCollections
     /**
      * delete the reference fields for a given project
      */
-    public static void deleteReferenceFields(MySqlConnection connection, long projectId) throws Exception
+    public static void deleteReferenceFields(SqliteConnection connection, long projectId) throws Exception
     {
     	String deleteSql = "delete from reference_fields where project_id=?";
     	PreparedStatement psFields = connection.getPreparedStatement(deleteSql);
@@ -1271,7 +1251,7 @@ public class DbCollections
     /**
      * get a list of history entries for a given user
      */
-    public static ArrayList <History> getUserHistory(MySqlConnection connection, User user) throws Exception
+    public static ArrayList <History> getUserHistory(SqliteConnection connection, User user) throws Exception
     {
         String sql="select max(id) as id from history where user_id=" + user.getId() + " group by type,type_id order by max(last_update) desc limit 20";
         ResultSet rs = connection.getResultSet(sql);

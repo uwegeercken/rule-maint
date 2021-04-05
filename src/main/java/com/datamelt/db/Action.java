@@ -37,7 +37,7 @@ public class Action extends DatabaseRecord implements Loadable
 	private static final String SELECT_SQL="select * from " + TABLENAME + " where id=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (description, classname, methodname, methoddisplayname) values (?,?,?,?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + "  set description=?, classname=?, methodname=?, methoddisplayname=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + "  set description=?, classname=?, methodname=?, last_update=current_timestamp, methoddisplayname=? where id =?";
     public static final String EXIST_SQL  = "select id from " + TABLENAME + "  where classname=? and methodname=?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";
 

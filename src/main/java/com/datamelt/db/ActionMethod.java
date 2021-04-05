@@ -42,7 +42,7 @@ public class ActionMethod extends DatabaseRecord implements Loadable
 	private static final String SELECT_SQL="select * from " + TABLENAME + " where id=?";
 	
 	public static final String INSERT_SQL = "insert into " + TABLENAME + " (action_id, return_type, method_types, note, optional_type1, optional_type1_explanation, optional_type2, optional_type2_explanation, optional_type3, optional_type3_explanation) values (?,?,?,?,?,?,?,?,?,?)";
-    public static final String UPDATE_SQL = "update " + TABLENAME + " set action_id=?, return_type=?, method_types=?, note=?, optional_type1=?, optional_type1_explanation=?, optional_type2=?, optional_type2_explanation=?, optional_type3=?, optional_type3_explanation=? where id =?";
+    public static final String UPDATE_SQL = "update " + TABLENAME + " set action_id=?, return_type=?, method_types=?, note=?, optional_type1=?, optional_type1_explanation=?, optional_type2=?, optional_type2_explanation=?, optional_type3=?, optional_type3_explanation=?,last_update=current_timestamp where id =?";
     public static final String DELETE_SQL = "delete from " + TABLENAME + " where id=?";
     public static final String EXIST_METHOD_SQL  = "select id from " + TABLENAME + "  where return_type=? and method_types=? and action_id=?";
 

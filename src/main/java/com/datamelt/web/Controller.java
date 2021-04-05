@@ -30,13 +30,11 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest; 
 import javax.servlet.http.HttpServletResponse;
 
+import com.datamelt.db.*;
+import com.datamelt.util.FileUtility;
 import org.apache.velocity.Template;
 import bsh.Interpreter;
 
-import com.datamelt.db.DatabaseCreator;
-import com.datamelt.db.DatabaseUpdate;
-import com.datamelt.db.JareVersion;
-import com.datamelt.db.MySqlConnection;
 import com.datamelt.plugin.BeanshellPlugin;
 import com.datamelt.plugin.PluginLoader;
 import com.datamelt.util.Ldap;
@@ -47,16 +45,12 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 {
     
     private static final String ACTIONS_WEBINF_ATTRIBUTE           = "actions";
-    private static final String DB_USER					           = "db_user";
-    private static final String DB_USERPASSWORD					   = "db_userpassword";
 	private static final String DEFAULT_ACTION_NAME                = "action";
 	private static final String BSH_ACTION_NAME		               = "BeanshellAction";
 	private static final String ACTIONS_PACKAGE_NAME               = "com.datamelt.web.action.";
 	private static final String LANGUAGE_WEBINF_ATTRIBUTE          = "language";
 	private static final String DEFAULT_LANGUAGE 				   = "eng";
 	private static final String DIRECTORY_MESSAGES                 = "message";
-    private static final String DB_HOSTNAME					       = "db_hostname";
-    private static final String DB_PORT					       	   = "db_port";
     private static final String PROJECT_EXPORT_FOLDER	       	   = "export_path";
     private static final String PROJECT_BACKUP_FOLDER	       	   = "backup_path";
     
@@ -96,7 +90,6 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
     private static int dbPort;
     private static String dbName;
     private static boolean dbConnectionOk;
-    private static boolean hostConnectionOk;
     private static Ldap ldap;
     
     private static Interpreter interpreter=null;
@@ -111,10 +104,9 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 		
 		readConfigFile(realPath);
 		readDatabaseFile(realPath);
-		hostConnectionOk = hostConnectionOk();
 		dbConnectionOk = databaseConnectionOk();
 		
-		if(hostConnectionOk && dbConnectionOk)
+		if(dbConnectionOk)
 		{
 			checkAndCreateDatabaseTables();
 			alterDatabaseTables();
@@ -206,7 +198,6 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 	{
 		readConfigFile(properties.getProperty(CONTEXT_PATH));
 		readDatabaseFile(properties.getProperty(CONTEXT_PATH));
-		hostConnectionOk = hostConnectionOk();
 		dbConnectionOk = databaseConnectionOk();
 	}
 	
@@ -251,11 +242,7 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 			Properties p = new Properties();
 			p.load(fis);
 			fis.close();
-			dbHostname = p.getProperty(DB_HOSTNAME);
-			dbPort = Integer.parseInt(p.getProperty(DB_PORT));
 			dbName = p.getProperty(DB_NAME);
-			dbUser=p.getProperty(DB_USER);
-			dbUserPassword=p.getProperty(DB_USERPASSWORD);
 		}
 		catch(Exception ex)
 		{
@@ -267,9 +254,16 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 	{
 		try
 		{
-			MySqlConnection con = getConnection(dbHostname,dbPort,dbName, dbUser,dbUserPassword);
-			con.close();
-			return true;
+			if(FileUtility.getFileExists(dbName))
+			{
+				SqliteConnection con = getConnection(dbName);
+				con.close();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		catch(Exception ex)
 		{
@@ -291,7 +285,7 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 	{
 		try
 		{
-			MySqlConnection connection = getConnection(dbHostname,dbPort,dbName, dbUser,dbUserPassword);
+			SqliteConnection connection = getConnection(dbName);
 			// create database tables if they don't exist
 			DatabaseCreator.createDatabaseTables(connection,dbName);
 
@@ -344,7 +338,7 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 	{
 		try
 		{
-			MySqlConnection con = getConnection(dbHostname,dbPort,dbName, dbUser,dbUserPassword);
+			SqliteConnection con = getConnection(dbName);
 			
 			DatabaseUpdate.alterDatabaseTables(con,dbName);
 			
@@ -358,21 +352,7 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
         
 	}
 	
-	private static boolean hostConnectionOk()
-	{
-		try
-		{
-			MySqlConnection con = getHostConnection(dbHostname,dbPort, dbUser,dbUserPassword);
-			con.close();
-			return true;
-		}
-		catch(Exception ex)
-		{
-			return false;
-		}
-	}
-	
-	public Template handleRequest(HttpServletRequest request,HttpServletResponse response, org.apache.velocity.context.Context context ) 
+	public Template handleRequest(HttpServletRequest request,HttpServletResponse response, org.apache.velocity.context.Context context )
     {
 	    Template template= null; 
 	    String actionTemplate = null;
@@ -390,23 +370,16 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 			{
 			    Class<?> c = Class.forName(ACTIONS_PACKAGE_NAME + className);
 		        action = (Action)c.newInstance();
-		        MySqlConnection con=null;
+		        SqliteConnection con=null;
 		        
-		        if(!hostConnectionOk)
+		        if(!dbConnectionOk)
 		        {
-		        	action.setHostConnectionOk(false);
-		        	action.setDatabaseConnectionOk(false);
-		        }
-		        else if(hostConnectionOk && !dbConnectionOk)
-		        {
-		        	action.setHostConnectionOk(true);
 		        	action.setDatabaseConnectionOk(false);
 		        }
 		        else 
 		        {
-		        	action.setHostConnectionOk(true);
 		        	action.setDatabaseConnectionOk(true);
-		        	con = getConnection(dbHostname,dbPort,dbName,dbUser,dbUserPassword);
+		        	con = getConnection(dbName);
 			        if(getProperty(AUTO_ADD_PLUGINS_WEBINF_ATTRIBUTE).equals("true"))
 			        {
 			            // executed if all plugins should be loaded:
@@ -422,7 +395,6 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 		        if(scriptName.equals(ConstantsWeb.CONFIG_DATABASE_SCRIPT)|| scriptName.equals(ConstantsWeb.CREATE_DATABASE_SCRIPT))
 		        {
 		        	readDatabaseFile(properties.getProperty(CONTEXT_PATH));
-		        	hostConnectionOk = hostConnectionOk();
 		    		dbConnectionOk = databaseConnectionOk();
 		        }
 			    if(con!=null)
@@ -450,7 +422,6 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 	        }
 		    catch (Exception ex)
 		    {
-		    	hostConnectionOk = hostConnectionOk();
 	    		dbConnectionOk = databaseConnectionOk();
 		    	context.put("error_cause",ex);
 		    	template = getTemplate(language + "/" +  ConstantsWeb.PAGE_ERROR);
@@ -464,14 +435,9 @@ public class Controller extends org.apache.velocity.tools.view.VelocityLayoutSer
 		return template;
     }
 	
-	public static MySqlConnection getHostConnection(String hostname, int port, String dbUser, String dbPassword) throws Exception
+	public static SqliteConnection getConnection(String databaseName) throws Exception
 	{
-	    return new MySqlConnection(hostname,port,dbUser,dbUserPassword);
-	}
-	
-	public static MySqlConnection getConnection(String hostname, int port, String databaseName, String dbUser, String dbPassword) throws Exception
-	{
-	    return new MySqlConnection(hostname,port,databaseName, dbUser,dbUserPassword);
+	    return new SqliteConnection(databaseName);
 	}
 	
 	public static String getMessage(String message)

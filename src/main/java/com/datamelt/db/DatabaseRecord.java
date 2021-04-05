@@ -18,6 +18,13 @@
  */ 
 package com.datamelt.db;
 
+import com.datamelt.util.DateUtility;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * @author uwegeercken
  *
@@ -26,7 +33,7 @@ public abstract class DatabaseRecord
 {
 	private long id;
 	private String lastUpdate;
-	private MySqlConnection connection;
+	private SqliteConnection connection;
 	
 	/**
 	 * returns the database id of the database record
@@ -51,7 +58,7 @@ public abstract class DatabaseRecord
 	 */
 	public String getLastUpdate()
 	{
-		return lastUpdate;
+		return DateUtility.convertUtcToLocal(lastUpdate);
 	}
 	
 	/**
@@ -59,7 +66,7 @@ public abstract class DatabaseRecord
 	 */
 	public String getLastUpdate(int length)
 	{
-		return lastUpdate.substring(0,length);
+		return DateUtility.convertUtcToLocal(lastUpdate).substring(0,length);
 	}
 	
 	/**
@@ -74,7 +81,7 @@ public abstract class DatabaseRecord
 	 * <br>
 	 * example: 20031016114618
 	 * 
-	 * @param date a date in the expected database date format
+	 *
 	 */
 	public void setLastUpdate(String lastUpdate)
 	{
@@ -88,7 +95,7 @@ public abstract class DatabaseRecord
 	 * exception is thrown.
 	 * 
 	 */
-	public MySqlConnection getConnection() throws Exception
+	public SqliteConnection getConnection() throws Exception
 	{
 		if (connection!=null)
 		{
@@ -104,9 +111,9 @@ public abstract class DatabaseRecord
 	 * Method used to set the database connection object
 	 * for the database record.
 	 * 
-	 * @param db a database connection object
+	 *
 	 */
-	public void setConnection(MySqlConnection connection)
+	public void setConnection(SqliteConnection connection)
 	{
 		this.connection = connection;
 	}
